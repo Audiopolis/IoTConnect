@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.1/howto/deployment/checklist/
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
@@ -35,11 +35,33 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'rest_framework',
+
+    # Third-party apps
+    'corsheaders',
+
+    # Project apps
+    'connect.apps.ConnectConfig',
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'iotconnect.utilities.permissions.PermissionsNotSet',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 25,
+    'DEFAULT_VERSION': '1',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -47,7 +69,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'iotconnect.urls'
+ROOT_URLCONF = 'uninett_api.url_config'
 
 TEMPLATES = [
     {
@@ -65,7 +87,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'iotconnect.wsgi.application'
+WSGI_APPLICATION = 'uninett_api.wsgi.application'
 
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
@@ -104,3 +126,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Security and sessions
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Dataporten
+SOCIAL_AUTH_DATAPORTEN_FEIDE_SSL_PROTOCOL = True
+
+# CORS
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = True
+# CORS_URLS_REGEX = r'^/connect/.*$'
