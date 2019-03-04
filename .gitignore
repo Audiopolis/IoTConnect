@@ -1,0 +1,110 @@
+.DS_store
+staticroot/
+media/
+venv/
+venv2/
+venv3/
+testing-venv/
+staging-venv/
+iotenv/
+start.sh
+etc/
+db.sqlite3
+celerybeat-schedule.db
+dump.rdb
+thumbnail_kvstore.db
+thumbnail_kvstore.lock
+thumbnail_kvstore.dir
+thumbnail_kvstore.bak
+thumbnail_kvstore.dat
+
+# Pycharm and IDEA
+*/.idea
+/.idea
+# Python
+*.pyc
+
+settings/_*.py
+!settings/__init__.py
+
+*.pid
+
+# Test scripts
+test_scripts/*
+prospector.txt
+manage-*.py
+
+# Created by https://www.gitignore.io
+
+### OSX ###
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon must end with two \r
+Icon
+
+
+# Thumbnails
+._*
+
+# Files that might appear on external disk
+.Spotlight-V100
+.Trashes'
+
+### Python ###
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+### Django ###
+*.log
+*.pot
+*.pyc
+__pycache__/
+local_settings.py
+
+.env
+
