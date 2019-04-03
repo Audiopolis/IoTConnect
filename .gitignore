@@ -24,8 +24,8 @@ thumbnail_kvstore.dat
 # Python
 *.pyc
 
-iotconnect/settings/_*.py
-!iotconnect/settings/__init__.py
+*/settings/_*.py
+!*/settings/__init__.py
 
 *.pid
 
