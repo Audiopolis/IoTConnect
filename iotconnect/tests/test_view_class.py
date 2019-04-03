@@ -1,7 +1,7 @@
-from unittest import TestCase
+from rest_framework.test import APITestCase
 
 
-class IotConnectViewTest(TestCase):
+class IotConnectViewTest(APITestCase):
     def test_class__view_set_up_without_adapter__bad_request(self):
         pass
 

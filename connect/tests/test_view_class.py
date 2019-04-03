@@ -1,9 +1,9 @@
-from unittest import TestCase
+from rest_framework.test import APITestCase
 
 
-class ConnectViewTest(TestCase):
+class ConnectViewTest(APITestCase):
     pass
 
 
-class DataportenRedirectView(TestCase):
+class DataportenRedirectView(APITestCase):
     pass
