@@ -133,10 +133,6 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
-# Dataporten
-SOCIAL_AUTH_DATAPORTEN_FEIDE_SSL_PROTOCOL = True
-
 # CORS
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_ALLOW_CREDENTIALS = True
-# CORS_URLS_REGEX = r'^/connect/.*$'
