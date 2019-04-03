@@ -6,7 +6,7 @@ from connect.classes.authenticator import FeideAuthenticator
 from connect.utils import get_access_token, get_user_data, get_first_name
 from iotconnect.classes import IotConnectView
 from uninett_api.settings._secrets import DATAPORTEN_URL
-from uninett_api.settings._test import FRONTEND_URL
+from uninett_api.settings._locals import FRONTEND_URL
 
 
 class ConnectView(IotConnectView):

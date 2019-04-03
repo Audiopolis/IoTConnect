@@ -3,7 +3,7 @@ import json
 import requests
 
 from uninett_api.settings._secrets import DATAPORTEN_HEADERS, DATAPORTEN_SECRET, DATAPORTEN_KEY
-from uninett_api.settings._test import BACKEND_URL
+from uninett_api.settings._locals import BACKEND_URL
 
 
 def get_access_token(code):
