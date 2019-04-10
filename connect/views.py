@@ -5,7 +5,7 @@ from connect.classes.adapter import HiveManagerAdapter
 from connect.classes.authenticator import FeideAuthenticator
 from connect.utils import get_access_token, get_user_data, get_first_name
 from iotconnect.classes import IotConnectView
-from uninett_api.settings._secrets import DATAPORTEN_URL
+from uninett_api.settings._secrets import DATAPORTEN_KEY
 from uninett_api.settings._locals import FRONTEND_URL
 
 
@@ -27,7 +27,7 @@ class ConnectView(IotConnectView):
             user_data = session.get('user_data', [])
             url = f"{FRONTEND_URL}?session_key={session._session_key}&name={get_first_name(user_data)}"
         else:
-            url = DATAPORTEN_URL
+            url = f"https://auth.dataporten.no/oauth/authorization?client_id={DATAPORTEN_KEY}&response_type=code"
 
         return redirect(to=url)
 
