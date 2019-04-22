@@ -37,14 +37,15 @@ class DataportenRedirectView(APIView):
 
     def get(self, request, **_kwargs):
         code = request.query_params.get('code', None)
-        if code:
-            access_token = get_access_token(request.query_params['code'])
-            user_data = get_user_data(access_token)
-            request.session['access_token'] = access_token
-            request.session['user_data'] = user_data
-            if not request.session.session_key:
-                request.session.save()
-            session_key = request.session.session_key
-            return redirect(f"{FRONTEND_URL}?session_key={session_key}&name={get_first_name(user_data)}")
-        else:
+
+        if not code:
             raise ValueError("code was not supplied")
+
+        access_token = get_access_token(code)
+        user_data = get_user_data(access_token)
+        request.session['access_token'] = access_token
+        request.session['user_data'] = user_data
+        if not request.session.session_key:
+            request.session.save()
+        session_key = request.session.session_key
+        return redirect(f"{FRONTEND_URL}?session_key={session_key}&name={get_first_name(user_data)}")
