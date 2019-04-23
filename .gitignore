@@ -108,3 +108,4 @@ local_settings.py
 
 .env
 
+_*
