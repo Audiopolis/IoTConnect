@@ -22,7 +22,7 @@ class HiveManagerAdapter(AdHocAdapter):
         if data.get('deliver_by_email', None) is None:
             raise ValidationError("deliver_by_email is required")
         if not data.get('device_type', None):
-            raise ValidationError("deliver_by_email is required")
+            raise ValidationError("device_type is required")
         if not data.get('email', None):
             raise ValidationError("deliver_by_email is required")
 
@@ -52,10 +52,9 @@ class HiveManagerAdapter(AdHocAdapter):
         data = self._get_generation_data(**kwargs)
 
         response = requests.post(url=url, params=params, data=json.dumps(data), headers=HEADERS)
-
         data, status_code = self._get_response_data(response)
-        response = Response(data=data, status=status_code)
-        return response
+
+        return Response(data=data, status=status_code)
 
     @staticmethod
     def _get_response_data(response):
