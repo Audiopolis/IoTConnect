@@ -7,8 +7,8 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from uninett_api.settings._secrets import HEADERS, OWNER_ID
 from iotconnect.classes import AdHocAdapter
+from uninett_api.settings._secrets import HEADERS, OWNER_ID
 
 
 class HiveManagerAdapter(AdHocAdapter):
@@ -22,8 +22,6 @@ class HiveManagerAdapter(AdHocAdapter):
         if data.get('deliver_by_email', None) is None:
             raise ValidationError("deliver_by_email is required")
         if not data.get('device_type', None):
-            raise ValidationError("deliver_by_email is required")
-        if not data.get('email', None):
             raise ValidationError("deliver_by_email is required")
 
         # Formatting
@@ -47,15 +45,14 @@ class HiveManagerAdapter(AdHocAdapter):
             'policy': 'PERSONAL',
             'device_type': validated_data['device_type'],
             'deliver_by_email': validated_data['deliver_by_email'],
-            'email': validated_data['email'],
+            'email': session['user_data']['email']
         }
         data = self._get_generation_data(**kwargs)
 
         response = requests.post(url=url, params=params, data=json.dumps(data), headers=HEADERS)
-
         data, status_code = self._get_response_data(response)
-        response = Response(data=data, status=status_code)
-        return response
+
+        return Response(data=data, status=status_code)
 
     @staticmethod
     def _get_response_data(response):
