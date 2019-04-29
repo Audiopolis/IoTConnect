@@ -38,7 +38,7 @@ class FeideAuthenticator(Authenticator):
         access_token = session.get('access_token', None)
         if access_token:
             # Try to get the user data from the session.
-            session_data = request.session.get('user_data', None)
+            session_data = session.get('user_data', None)
             # If an access token exists in the session, try to get user data from Feide.
             feide_data = get_user_data(access_token=access_token)
             # Validate
