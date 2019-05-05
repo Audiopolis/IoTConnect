@@ -1,0 +1,2 @@
+class NoDataportenCodeError(Exception):
+    pass

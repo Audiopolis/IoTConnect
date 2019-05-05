@@ -90,9 +90,9 @@ class IotConnectView(APIView):
 
     def _validate_attributes(self):
         if not self.ad_hoc_adapter:
-            raise AttributeError("The attribute 'ad_hoc_adapter' must be set.")
+            raise AttributeError("ad_hoc_adapter must be set")
         if not self.authenticator and self.requires_authentication:
-            raise AttributeError("The attribute 'authenticator' must be set if 'requires_authentication' is True.")
+            raise AttributeError("authenticator must be set if requires_authentication is True")
         if not hasattr(self.ad_hoc_adapter, 'generate_psk'):
             raise AttributeError(
                 "The ad hoc adapter used should inherit the AdHocAdapter and implement all abstract methods."
@@ -104,6 +104,8 @@ class IotConnectView(APIView):
 
     @staticmethod
     def _validate_request(request):
+        if not request.data:
+            raise ValidationError("authentication_data and generation_options are required")
         try:
             authentication_data = request.data['authentication_data']
         except KeyError:
