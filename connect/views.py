@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 
 from connect.classes.adapter import HiveManagerAdapter
 from connect.classes.authenticator import FeideAuthenticator
+from connect.exceptions import NoDataportenCodeError
 from connect.utils import get_access_token, get_user_data, get_first_name
 from iotconnect.classes import IotConnectView
 from uninett_api.settings._secrets import DATAPORTEN_KEY
@@ -39,7 +40,7 @@ class DataportenRedirectView(APIView):
         code = request.query_params.get('code', None)
 
         if not code:
-            raise ValueError("code was not supplied")
+            raise NoDataportenCodeError("code was not supplied")
 
         access_token = get_access_token(code)
         user_data = get_user_data(access_token)

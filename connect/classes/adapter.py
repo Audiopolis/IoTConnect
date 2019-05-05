@@ -71,6 +71,8 @@ class HiveManagerAdapter(AdHocAdapter):
     def _get_generation_data(feide_username: str, group_id: int, full_name: str, organization_name: str, policy: str,
                              device_type: str, deliver_by_email: bool, email: str):
         feide_username = feide_username.strip('feide:').split('@')[0]
+        hive_user_name = f"{feide_username}: {datetime.datetime.now().replace(microsecond=0).strftime('%y%m%d%H%M%S')}"
+
         return {
             "deliverMethod": "NO_DELIVERY" if not deliver_by_email else "EMAIL",
             "firstName": f"{full_name}",
@@ -79,6 +81,6 @@ class HiveManagerAdapter(AdHocAdapter):
             "email": email,
             "organization": organization_name,
             "policy": policy,
-            "userName": f"{feide_username}: {datetime.datetime.now().strftime('%d/%m/%y %H-%M-%S')}",
+            "userName": hive_user_name,
             "purpose": device_type
         }
