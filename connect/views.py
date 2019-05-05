@@ -1,3 +1,5 @@
+import urllib.parse
+
 from django.shortcuts import redirect
 from rest_framework.views import APIView
 
@@ -26,9 +28,13 @@ class ConnectView(IotConnectView):
 
         if authenticated:
             user_data = session.get('user_data', [])
-            url = f"{FRONTEND_URL}?session_key={session._session_key}&name={get_first_name(user_data)}"
+            query_strings = {'session_key': session._session_key, 'name': get_first_name(user_data)}
+            encoded = urllib.parse.urlencode(query_strings)
+            url = f"{FRONTEND_URL}?{encoded}"
         else:
-            url = f"https://auth.dataporten.no/oauth/authorization?client_id={DATAPORTEN_KEY}&response_type=code"
+            query_strings = {'client_id': DATAPORTEN_KEY, 'response_type': 'code'}
+            encoded = urllib.parse.urlencode(query_strings)
+            url = f"https://auth.dataporten.no/oauth/authorization?{encoded}"
 
         return redirect(to=url)
 
@@ -49,4 +55,6 @@ class DataportenRedirectView(APIView):
         if not request.session.session_key:
             request.session.save()
         session_key = request.session.session_key
-        return redirect(f"{FRONTEND_URL}?session_key={session_key}&name={get_first_name(user_data)}")
+        query_strings = {'session_key': session_key, 'name': get_first_name(user_data)}
+        encoded = urllib.parse.urlencode(query_strings)
+        return redirect(f"{FRONTEND_URL}?{encoded}")
