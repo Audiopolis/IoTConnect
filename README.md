@@ -53,6 +53,8 @@ Inspect the code in the *connect* app, which can be renamed, inspect and get fam
 
 Customize the tests within the *connect* app to reflect your own changes.
 
+Also note that the *CustomExceptionMiddleware* middleware is installed in the *base* settings. This should be removed or customized.
+
 ## Contributing
 
 Please create a feature branch for your changes and rebase multiple commits if possible.
