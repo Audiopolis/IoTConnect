@@ -57,7 +57,7 @@ Also note that the *CustomExceptionMiddleware* middleware is installed in the *b
 
 ## Contributing
 
-Please create a feature branch for your changes and rebase multiple commits if possible.
+Please create a feature branch for your changes and squash multiple commits if possible.
 
 ## Authors
 
