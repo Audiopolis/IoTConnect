@@ -10,7 +10,15 @@ from iotconnect.classes import Authenticator
 class FeideAuthenticator(Authenticator):
     def validate_data(self, data, **kwargs):
         # Convert to JSON
-        data = json.loads(data)
+        try:
+            data = json.loads(data)
+        except TypeError:
+            pass
+
+        if self.request.method.upper() != 'GET' and not data.get('session_key', None):
+            # session_key is required when posting, because sessions will not work when posting using XmlHttpRequests.
+            raise ValidationError({'session_key': 'session_key is required'})
+
         return data
 
     def is_authorized(self, validated_data):
@@ -18,36 +26,29 @@ class FeideAuthenticator(Authenticator):
 
         # When the method is GET, we do not expect the authentication data to be sent. Handle this case.
         if request.method.upper() == 'GET':
-            # Try to get the access token from the request.
-            access_token = request.session.get('access_token', None)
-            if access_token:
-                # Try to get the user data from the session.
-                session_data = request.session.get('user_data', None)
-                # If an access token exists in the session, try to get user data from Feide.
-                feide_data = get_user_data(access_token=access_token)
-                # Validate
-                return self._validate_user_data(session_data, feide_data)
-            # access_token is not stored in session. Require authentication.
-            return False
-
-        # The method is not GET.
-        try:
+            session = request.session
+        else:
+            # The method is not GET.
             session_key = validated_data['session_key']
             try:
-                # Get the session.
+                # Get the session using the authentication data (session_key). Required because CORS does not work.
                 session = Session.objects.get(pk=session_key).get_decoded()
-                # Get the session data
-                session_data = session.get('user_data', None)
-                # Get the user data from Feide.
-                user_data = get_user_data(access_token=session['access_token'])
-                # Validate
-                return self._validate_user_data(session_data, user_data)
             except Session.DoesNotExist:
                 # The session key is invalid. Require authentication.
                 return False
-        except KeyError:
-            # session_key is required when posting, because sessions will not work when posting using XmlHttpRequests.
-            raise ValidationError({'session_key': 'session_key is required'})
+
+        # Try to get the access token from the session.
+        access_token = session.get('access_token', None)
+        if access_token:
+            # Try to get the user data from the session.
+            session_data = session.get('user_data', None)
+            # If an access token exists in the session, try to get user data from Feide.
+            feide_data = get_user_data(access_token=access_token)
+            # Validate
+            return self._validate_user_data(session_data, feide_data)
+
+        # access_token is not stored in session. Require authentication.
+        return False
 
     @staticmethod
     def _validate_user_data(session_data, feide_data):

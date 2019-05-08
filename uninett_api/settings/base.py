@@ -59,6 +59,10 @@ REST_FRAMEWORK = {
 }
 
 MIDDLEWARE = [
+    # Custom
+    'connect.middleware.CustomExceptionMiddleware',
+
+    # Built-in
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
