@@ -54,24 +54,25 @@ class HiveManagerAdapter(AdHocAdapter):
 
         return Response(data=data, status=status_code)
 
-    @staticmethod
-    def _get_response_data(response):
+    def _get_response_data(self, response):
         if response.status_code == status.HTTP_403_FORBIDDEN:
             data = {'error': 'Could not generate PSK because the user has already created one this second'}
             return data, response.status_code
         try:
-            data = json.loads(response.content)['data']['password']
+            psk = json.loads(response.content)['data']['password']
+            data = {'psk': psk, 'username': self.hive_user_name}
             status_code = status.HTTP_201_CREATED
         except TypeError:
             data = {'error': 'Could not generate PSK due to an unknown error with the multi-PSK service'}
             status_code = status.HTTP_500_INTERNAL_SERVER_ERROR
+
         return data, status_code
 
-    @staticmethod
-    def _get_generation_data(feide_username: str, group_id: int, full_name: str, organization_name: str, policy: str,
+    def _get_generation_data(self, feide_username: str, group_id: int, full_name: str, organization_name: str, policy: str,
                              device_type: str, deliver_by_email: bool, email: str):
         feide_username = feide_username.strip('feide:').split('@')[0]
         hive_user_name = f"{feide_username}: {datetime.datetime.now().replace(microsecond=0).strftime('%y%m%d%H%M%S')}"
+        self.hive_user_name = hive_user_name
 
         return {
             "deliverMethod": "NO_DELIVERY" if not deliver_by_email else "EMAIL",

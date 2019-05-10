@@ -1,11 +1,13 @@
 import urllib.parse
 
 from django.shortcuts import redirect
+from rest_framework import status
 from rest_framework.views import APIView
 
 from connect.classes.adapter import HiveManagerAdapter
 from connect.classes.authenticator import FeideAuthenticator
 from connect.exceptions import NoDataportenCodeError
+from connect.models import FeideIdentity, DeviceRegistration
 from connect.utils import get_access_token, get_user_data, get_first_name
 from iotconnect.classes import IotConnectView
 from uninett_api.settings._secrets import DATAPORTEN_KEY
@@ -37,6 +39,27 @@ class ConnectView(IotConnectView):
             url = f"https://auth.dataporten.no/oauth/authorization?{encoded}"
 
         return redirect(to=url)
+
+    def finalize_response(self, request, response, *args, **kwargs):
+        if response.status_code == status.HTTP_201_CREATED:
+            hive_manager_id = response.data['username']
+            response.data = response.data['psk']
+            user_data = get_user_data(self.authentication_data['session_key'])
+            name = user_data['name']
+            email = user_data['email']
+            feide_username = user_data['userid_sec'][0]
+
+            feide_identity: FeideIdentity = FeideIdentity.objects.get_or_create(feide_user_id=feide_username)
+            feide_identity.name = name
+            feide_identity.email = email
+
+            device_description = self.generation_options['device_type']
+            psk = response.data
+
+            DeviceRegistration.objects.create(feide_id=feide_identity, device_description=device_description, psk=psk,
+                                              hive_manager_id=hive_manager_id)
+
+        return super().finalize_response(request, response, *args, **kwargs)
 
 
 class DataportenRedirectView(APIView):
