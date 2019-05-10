@@ -45,15 +45,17 @@ class ConnectView(IotConnectView):
         if response.status_code == status.HTTP_201_CREATED:
             hive_manager_id = response.data['username']
             response.data = response.data['psk']
-            session = Session.objects.get(pk=self.authentication_data['session_key'])
+            session = Session.objects.get(pk=self.authentication_data['session_key']).get_decoded()
             user_data = get_user_data(access_token=session['access_token'])
             name = user_data['name']
             email = user_data['email']
             feide_username = user_data['userid_sec'][0]
 
-            feide_identity: FeideIdentity = FeideIdentity.objects.get_or_create(feide_user_id=feide_username)
-            feide_identity.name = name
-            feide_identity.email = email
+            feide_identity, _created = FeideIdentity.objects.get_or_create(feide_user_id=feide_username)
+            if feide_identity.name != name or feide_identity.email != email:
+                feide_identity.name = name
+                feide_identity.email = email
+                feide_identity.save()
 
             device_description = self.generation_options['device_type']
             psk = response.data
