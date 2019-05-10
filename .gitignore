@@ -1,5 +1,6 @@
 .DS_store
 staticroot/
+static/
 media/
 venv/
 venv2/
@@ -108,3 +109,4 @@ local_settings.py
 
 .env
 
+_*
