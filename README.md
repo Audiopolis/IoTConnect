@@ -59,6 +59,10 @@ Also note that the *CustomExceptionMiddleware* middleware is installed in the *b
 
 Please create a feature branch for your changes and squash multiple commits if possible.
 
+## Notes
+
+Please note the presence of the custom DisableCSRFMiddleware and the disabling of django.middleware.csrf.CsrfViewMiddleware. These changes were made because of an unidentified issue that caused Ajax calls to sometimes fail, likely because of cookie states that are difficult to reproduce. These changes should not be included in a production environment, as it may make users vulnerable to CSRF attacks. We do not believe such an attack will be worth the effort for an attacker, considering the prize is to gain access to the internet.
+
 ## Authors
 
 * **Magnus Bakke** - [Audiopolis](https://github.com/Audiopolis)
