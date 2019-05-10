@@ -10,11 +10,6 @@ from iotconnect.classes import Authenticator
 class FeideAuthenticator(Authenticator):
     def validate_data(self, data, **kwargs):
         # Convert to JSON
-        try:
-            data = json.loads(data)
-        except TypeError:
-            pass
-
         if self.request.method.upper() != 'GET' and not data.get('session_key', None):
             # session_key is required when posting, because sessions will not work when posting using XmlHttpRequests.
             raise ValidationError({'session_key': 'session_key is required'})

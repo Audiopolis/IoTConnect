@@ -16,8 +16,6 @@ class HiveManagerAdapter(AdHocAdapter):
 
     def validate_data(self, data, **kwargs):
         # TODO: Validate all data, possibly using serializers
-        # Convert to JSON
-        data = json.loads(data)
         # Validation
         if data.get('deliver_by_email', None) is None:
             raise ValidationError("deliver_by_email is required")

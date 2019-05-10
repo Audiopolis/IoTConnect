@@ -1,3 +1,5 @@
+import json
+
 from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.exceptions import ValidationError
@@ -115,5 +117,11 @@ class IotConnectView(APIView):
             generation_options = request.data['generation_options']
         except KeyError:
             raise ValidationError("generation_options is required.")
+
+        try:
+            authentication_data = json.loads(authentication_data)
+            generation_options = json.loads(generation_options)
+        except TypeError:
+            pass
 
         return authentication_data, generation_options
