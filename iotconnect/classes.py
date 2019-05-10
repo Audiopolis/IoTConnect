@@ -87,8 +87,7 @@ class IotConnectView(APIView):
             if not self.authenticator.authenticate(self.authentication_data, **kwargs):
                 if self.authentication_failed_redirect_uri is not None:
                     return redirect(to=self.authentication_failed_redirect_uri)
-                raise ValueError("Could not authenticate")
-                # return Response(status=status.HTTP_403_FORBIDDEN)
+                return Response(status=status.HTTP_403_FORBIDDEN)
         # Generate and return the PSK
         return self.ad_hoc_adapter.generate_psk(self.generation_options, **kwargs)
 
