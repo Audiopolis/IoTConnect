@@ -1,5 +1,6 @@
 import urllib.parse
 
+from django.contrib.sessions.models import Session
 from django.shortcuts import redirect
 from rest_framework import status
 from rest_framework.views import APIView
@@ -44,7 +45,8 @@ class ConnectView(IotConnectView):
         if response.status_code == status.HTTP_201_CREATED:
             hive_manager_id = response.data['username']
             response.data = response.data['psk']
-            user_data = get_user_data(self.authentication_data['session_key'])
+            session = Session.objects.get(pk=self.authentication_data['session_key'])
+            user_data = get_user_data(access_token=session['access_token'])
             name = user_data['name']
             email = user_data['email']
             feide_username = user_data['userid_sec'][0]
