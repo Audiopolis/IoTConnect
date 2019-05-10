@@ -6,6 +6,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from connect.utils import attempt_json_loads
 from iotconnect.utilities.enums import IotRequestMethod
 from iotconnect.utilities.mixins import ValidatorMixin
 
@@ -86,7 +87,8 @@ class IotConnectView(APIView):
             if not self.authenticator.authenticate(self.authentication_data, **kwargs):
                 if self.authentication_failed_redirect_uri is not None:
                     return redirect(to=self.authentication_failed_redirect_uri)
-                return Response(status=status.HTTP_403_FORBIDDEN)
+                raise ValueError("Could not authenticate")
+                # return Response(status=status.HTTP_403_FORBIDDEN)
         # Generate and return the PSK
         return self.ad_hoc_adapter.generate_psk(self.generation_options, **kwargs)
 
@@ -118,10 +120,7 @@ class IotConnectView(APIView):
         except KeyError:
             raise ValidationError("generation_options is required.")
 
-        try:
-            authentication_data = json.loads(authentication_data)
-            generation_options = json.loads(generation_options)
-        except TypeError:
-            pass
+        authentication_data = attempt_json_loads(authentication_data)
+        generation_options = attempt_json_loads(generation_options)
 
         return authentication_data, generation_options

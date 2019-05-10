@@ -4,6 +4,7 @@ import requests
 from django.db import models
 from model_utils import FieldTracker
 
+from connect.utils import attempt_json_loads
 from uninett_api.settings._secrets import OWNER_ID, HEADERS
 
 
@@ -82,7 +83,8 @@ class DeviceRegistration(models.Model):
     def delete_from_hive_manager(self):
         url = "https://cloud-ie.aerohive.com/xapi/v1/identity/credentials"
         get_params = {'ownerId': OWNER_ID, 'ids': [], 'userName': self.hive_manager_id}
-        hive_manager_user = json.loads(requests.get(url=url, params=get_params, headers=HEADERS)._content)['data'][0]
+        hive_manager_user = attempt_json_loads(requests.get(url=url, params=get_params,
+                                                            headers=HEADERS)._content)['data'][0]
         real_id = hive_manager_user['id']
 
         post_params = {'ownerId': OWNER_ID, 'ids': [real_id]}

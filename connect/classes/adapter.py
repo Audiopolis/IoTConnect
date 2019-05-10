@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
+from connect.utils import attempt_json_loads
 from iotconnect.classes import AdHocAdapter
 from uninett_api.settings._secrets import HEADERS, OWNER_ID
 
@@ -17,10 +18,7 @@ class HiveManagerAdapter(AdHocAdapter):
     def validate_data(self, data, **kwargs):
         # TODO: Validate all data, possibly using serializers
         # Convert to JSON
-        try:
-            data = json.loads(data)
-        except TypeError:
-            pass
+        data = attempt_json_loads(data)
 
         # Validation
         if data.get('deliver_by_email', None) is None:
@@ -37,8 +35,7 @@ class HiveManagerAdapter(AdHocAdapter):
     def perform_generation(self, validated_data):
         url = "https://cloud-ie.aerohive.com/xapi/v1/identity/credentials"
         params = {'ownerId': OWNER_ID}
-
-        session_key = json.loads(self.request.data['authentication_data'])['session_key']
+        session_key = attempt_json_loads(self.request.data['authentication_data'])['session_key']
         session = Session.objects.get(pk=session_key).get_decoded()
 
         kwargs = {
@@ -63,7 +60,7 @@ class HiveManagerAdapter(AdHocAdapter):
             data = {'error': 'Could not generate PSK because the user has already created one this second'}
             return data, response.status_code
         try:
-            psk = json.loads(response.content)['data']['password']
+            psk = attempt_json_loads(response.content)['data']['password']
             data = {'psk': psk, 'username': self.hive_user_name}
             status_code = status.HTTP_201_CREATED
         except TypeError:
