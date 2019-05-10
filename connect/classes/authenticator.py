@@ -3,17 +3,14 @@ import json
 from django.contrib.sessions.models import Session
 from rest_framework.exceptions import ValidationError
 
-from connect.utils import get_user_data
+from connect.utils import get_user_data, attempt_json_loads
 from iotconnect.classes import Authenticator
 
 
 class FeideAuthenticator(Authenticator):
     def validate_data(self, data, **kwargs):
         # Convert to JSON
-        try:
-            data = json.loads(data)
-        except TypeError:
-            pass
+        data = attempt_json_loads(data)
 
         if self.request.method.upper() != 'GET' and not data.get('session_key', None):
             # session_key is required when posting, because sessions will not work when posting using XmlHttpRequests.
