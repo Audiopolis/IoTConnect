@@ -83,12 +83,12 @@ class DeviceRegistration(models.Model):
     def delete_from_hive_manager(self):
         url = "https://cloud-ie.aerohive.com/xapi/v1/identity/credentials"
         get_params = {'ownerId': OWNER_ID, 'ids': [], 'userName': self.hive_manager_id}
-        hive_manager_user = attempt_json_loads(requests.get(url=url, params=get_params,
-                                                            headers=HEADERS)._content)['data'][0]
+        try:
+            hive_manager_user = attempt_json_loads(requests.get(url=url, params=get_params,
+                                                                headers=HEADERS)._content)['data'][0]
+        except IndexError:
+            return
+
         real_id = hive_manager_user['id']
-
         post_params = {'ownerId': OWNER_ID, 'ids': [real_id]}
-        response = requests.delete(url=url, params=post_params, headers=HEADERS)
-
-        if not response.status_code == 200:
-            raise ValueError("HiveManager did not return a 200 OK response")
+        requests.delete(url=url, params=post_params, headers=HEADERS)
